@@ -975,16 +975,16 @@ form.addEventListener('submit', async function(event) {
     entry["État de Floraison"] = document.getElementById('État de Floraison').value;
 const pieds = document.getElementById('Pieds').value;
 const entryForSheetDB = {
-  id,
-  genre,
-  espece,
-  date,
-  lat,
-  lon,
+  ID: id,
+  Genre: genre,
+  Espece: espece,
   Pieds: pieds,
+  Date: date,
+  Latitude: lat,
+  Longitude: lon,
   Commune: commune,
   "État de Floraison": etatFloraison,
-  photoURL
+  PhotoURL: photoURL
 };
 
     if (editingEntryId) {
