@@ -1285,8 +1285,8 @@ async function loadEntriesFromSheetDB() {
     date: entry.Date,
     lat: entry.Latitude ? parseFloat(String(entry.Latitude).replace(',', '.')) : undefined,
     lon: entry.Longitude ? parseFloat(String(entry.Longitude).replace(',', '.')) : undefined,
-    Commune: entry.Commune || '',
     Pieds: entry.Pieds || '',
+    Commune: entry.Commune || '',
     "État de Floraison": entry["État de Floraison"] || entry.Etat_de_Floraison || '',
     photoURL: entry.PhotoURL
 })) : [];
