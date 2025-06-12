@@ -973,7 +973,7 @@ form.addEventListener('submit', async function(event) {
     const entry = { id, genre, espece, date, lat, lon, photoURL };
     entry["Pieds"] = document.getElementById('Pieds').value;
     entry["État de Floraison"] = document.getElementById('État de Floraison').value;
-const entryForSheetDB = { id, genre, espece, date, lat, lon, commune, photoURL };
+const entryForSheetDB = { id, genre, espece, date, lat, lon, Commune: commune, photoURL };
 entryForSheetDB["Pieds"] = document.getElementById('Pieds').value;
 entryForSheetDB["État de Floraison"] = document.getElementById('État de Floraison').value;
 
