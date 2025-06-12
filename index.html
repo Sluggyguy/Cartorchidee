@@ -1275,10 +1275,9 @@ async function loadEntriesFromSheetDB() {
     date: entry.Date,
     lat: entry.Latitude ? parseFloat(String(entry.Latitude).replace(',', '.')) : undefined,
     lon: entry.Longitude ? parseFloat(String(entry.Longitude).replace(',', '.')) : undefined,
-    commune: (typeof entry.Commune !== 'undefined' ? entry.Commune : ''),
-    Commune: (typeof entry.Commune !== 'undefined' ? entry.Commune : ''),
-    Pieds: (typeof entry.Pieds !== 'undefined' ? entry.Pieds : ''),
-    "État de Floraison": (typeof entry["État de Floraison"] !== 'undefined' ? entry["État de Floraison"] : ''),
+    Commune: entry.Commune || '',
+    Pieds: entry.Pieds || '',
+    "État de Floraison": entry["État de Floraison"] || entry.Etat_de_Floraison || '',
     photoURL: entry.PhotoURL
 })) : [];
 filteredData = orchidData;
