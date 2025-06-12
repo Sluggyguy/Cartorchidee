@@ -980,9 +980,9 @@ const entryForSheetDB = {
   date,
   lat,
   lon,
-  Pieds: document.getElementById('Pieds').value,
+  Pieds: document.getElementById('Pieds').value.trim(),
   Commune: commune,
-  "État de Floraison": document.getElementById('État de Floraison').value,
+  "État de Floraison": etatFloraison,
   photoURL
 };
 
