@@ -945,7 +945,7 @@ form.addEventListener('submit', async function(event) {
     const lat = latValue !== '' ? parseFloat(latValue) : '';
     const lon = lonValue !== '' ? parseFloat(lonValue) : '';
     const commune = document.getElementById('commune').value.trim();
-    const notes = document.getElementById('notes').value.trim();
+    const etatFloraison = document.getElementById('État de Floraison').value.trim();
     const id = editingEntryId || Math.random().toString(36).substr(2, 5).toUpperCase();
     const photoDataURL = window.photoDataURL || '';
 
