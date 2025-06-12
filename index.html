@@ -1302,16 +1302,17 @@ filteredData = orchidData;
         async function addEntryToSheetDB(entry) {
             // SheetDB attend des champs avec la casse exacte de la feuille Google Sheets
     const payload = {
-        ID: entry.id,
-        Genre: entry.genre,
-        Espece: entry.espece,
-        Date: entry.date,
-        Latitude: entry.lat,
-        Longitude: entry.lon,
-        Commune: entry.commune,
-        Note: entry.notes,
-        PhotoURL: entry.photoURL
-    };
+    ID: entry.ID,
+    Genre: entry.Genre,
+    Espece: entry.Espece,
+    Pieds: entry.Pieds,
+    Date: entry.Date,
+    Latitude: entry.Latitude,
+    Longitude: entry.Longitude,
+    Commune: entry.Commune,
+    "État de Floraison": entry["État de Floraison"],
+    PhotoURL: entry.PhotoURL
+};
             try {
                 const response = await fetch(SHEETDB_URL, {
                     method: 'POST',
@@ -1382,6 +1383,4 @@ filteredData = orchidData;
     renderMapMarkers(filteredData);
 
 
-    </script>
-</body>
-</html>
+    
