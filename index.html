@@ -11,6 +11,42 @@
     <!-- EXIF.js for reading image metadata -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
     <style>
+.photo-preview-row {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    gap: 12px;
+    justify-content: flex-start;
+}
+#photo-preview {
+    max-width: 110px;
+    max-height: 90px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.07);
+    margin: 0;
+    background: #f9f9f9;
+    display: none; /* Par défaut caché */
+}
+#clear-photo-btn {
+    height: 32px;
+    margin-left: 0;
+    margin-top: 0;
+    padding: 0 14px;
+    font-size: 0.97em;
+}
+@media (max-width: 600px) {
+    .photo-preview-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    #photo-preview {
+        max-width: 90vw;
+        max-height: 120px;
+    }
+}
+</style>
         /* Basic Styling */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -449,10 +485,12 @@
                     <form id="orchid-form">
                         <div>
                             <label for="photoFile">Photo (JPEG/PNG, optionnel):</label>
-                            <input type="file" id="photoFile" name="photoFile" accept="image/jpeg, image/png">
-                            <img id="photo-preview" src="#" alt="Aperçu photo"/>
-                            <button type="button" id="clear-photo-btn">Retirer la photo</button>
-                            <p id="loading-message">Extraction des données GPS...</p>
+<input type="file" id="photoFile" name="photoFile" accept="image/jpeg, image/png">
+<div class="photo-preview-row">
+    <img id="photo-preview" src="#" alt="Aperçu photo" />
+    <button type="button" id="clear-photo-btn">Retirer la photo</button>
+</div>
+<p id="loading-message">Extraction des données GPS...</p>
                         </div>
                         <div>
                             <label for="genus">Genre&nbsp;:</label>
@@ -970,9 +1008,8 @@ form.addEventListener('submit', async function(event) {
     } else {
         photoURL = (editingEntryId ? (orchidData.find(e => e.id === id)?.photoURL || '') : '');
     }
-    const entry = { id, genre, espece, date, lat, lon, photoURL };
-    entry["Pieds"] = document.getElementById('Pieds').value;
-    entry["État de Floraison"] = document.getElementById('État de Floraison').value;
+    const entry = { id, genre, espece, date, lat, lon, Pieds: document.getElementById('Pieds').value, "État de Floraison": document.getElementById('État de Floraison').value, Commune: commune, photoURL };
+
 const pieds = document.getElementById('Pieds').value;
 const entryForSheetDB = {
   ID: id,
