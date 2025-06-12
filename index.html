@@ -484,13 +484,15 @@
                     <h2>Ajouter/Modifier une Observation</h2>
                     <form id="orchid-form">
                         <div>
-                            <label for="photoFile">Photo (JPEG/PNG, optionnel):</label>
-<input type="file" id="photoFile" name="photoFile" accept="image/jpeg, image/png">
-<div class="photo-preview-row">
-    <img id="photo-preview" src="#" alt="Aperçu photo" />
-    <button type="button" id="clear-photo-btn">Retirer la photo</button>
-</div>
-<p id="loading-message">Extraction des données GPS...</p>
+                            <div>
+                                <label for="photoFile">Photo (JPEG/PNG, optionnel):</label>
+                                <input type="file" id="photoFile" name="photoFile" accept="image/jpeg, image/png">
+                                <div class="photo-preview-row">
+                                    <img id="photo-preview" src="#" alt="Aperçu photo" />
+                                    <button type="button" id="clear-photo-btn">Retirer la photo</button>
+                                </div>
+                                <p id="loading-message">Extraction des données GPS...</p>
+                            </div>
                         </div>
                         <div>
                             <label for="genus">Genre&nbsp;:</label>
