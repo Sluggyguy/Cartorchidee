@@ -338,6 +338,16 @@ footer { text-align: center; padding: 15px; background-color: #333; color: #aaa;
                 <input type="text" id="search-table" placeholder="Rechercher..." style="width:300px;max-width:100%">
                 <button id="btn-search-table" title="Rechercher" style="padding:4px 9px;">🔍</button>
                 <button id="btn-clear-search-table" title="Effacer la recherche" style="padding:4px 9px;">❌</button>
+                <span style="margin-left:12px;font-size:0.97em;">Filtrer par couleur :</span>
+<div id="color-filter-buttons" style="display:inline-flex;gap:7px;vertical-align:middle;margin-left:3px;">
+    <button class="color-filter-btn active" data-color="" title="Toutes les couleurs" style="width:22px;height:22px;border-radius:50%;border:2px solid #bbb;background:linear-gradient(90deg,#E50000,#ffe600,#4caf50,#3498db,deeppink,gray);display:inline-block;cursor:pointer;outline:none;"></button>
+    <button class="color-filter-btn" data-color="pink" title="Rose" style="width:22px;height:22px;border-radius:50%;border:2px solid #bbb;background:deeppink;display:inline-block;cursor:pointer;outline:none;"></button>
+    <button class="color-filter-btn" data-color="gray" title="Gris" style="width:22px;height:22px;border-radius:50%;border:2px solid #bbb;background:gray;display:inline-block;cursor:pointer;outline:none;"></button>
+    <button class="color-filter-btn" data-color="green" title="Vert" style="width:22px;height:22px;border-radius:50%;border:2px solid #bbb;background:#4caf50;display:inline-block;cursor:pointer;outline:none;"></button>
+    <button class="color-filter-btn" data-color="yellow" title="Jaune" style="width:22px;height:22px;border-radius:50%;border:2px solid #bbb;background:#ffe600;display:inline-block;cursor:pointer;outline:none;"></button>
+    <button class="color-filter-btn" data-color="red" title="Rouge" style="width:22px;height:22px;border-radius:50%;border:2px solid #bbb;background:#E50000;display:inline-block;cursor:pointer;outline:none;"></button>
+    <button class="color-filter-btn" data-color="blue" title="Bleu" style="width:22px;height:22px;border-radius:50%;border:2px solid #bbb;background:#3498db;display:inline-block;cursor:pointer;outline:none;"></button>
+</div>                
             </div>
             <div style="overflow-x:auto;"> <!-- For table responsiveness -->
                 <table id="entries-table">
@@ -718,24 +728,37 @@ function resetPhotoFields() {
 // Recherche dans le tableau et sur la carte
 function doSearchTable() {
     const query = document.getElementById('search-table').value.trim().toLowerCase();
-    if (!query) {
-        filteredData = orchidData;
-    } else {
-        filteredData = orchidData.filter(entry => {
-            return (
-                (entry.espece && entry.espece.toLowerCase().includes(query)) ||
-                (entry.Commune && entry.Commune.toLowerCase().includes(query)) ||
-                (entry.commune && entry.commune.toLowerCase().includes(query)) ||
-                (entry["État de Floraison"] && entry["État de Floraison"].toLowerCase().includes(query)) ||
-                (entry.date && formatDateFR(entry.date).includes(query)) ||
-                (entry.lat && String(entry.lat).includes(query)) ||
-                (entry.lon && String(entry.lon).includes(query))
-            );
-        });
-    }
+    const color = typeof activeColorFilter !== 'undefined' ? activeColorFilter : '';
+    filteredData = orchidData.filter(entry => {
+        // Filtre texte (si vide, tout passe)
+        const textOk = !query || (
+            (entry.espece && entry.espece.toLowerCase().includes(query)) ||
+            (entry.Commune && entry.Commune.toLowerCase().includes(query)) ||
+            (entry.commune && entry.commune.toLowerCase().includes(query)) ||
+            (entry["État de Floraison"] && entry["État de Floraison"].toLowerCase().includes(query)) ||
+            (entry.date && formatDateFR(entry.date).includes(query)) ||
+            (entry.lat && String(entry.lat).includes(query)) ||
+            (entry.lon && String(entry.lon).includes(query))
+        );
+        // Filtre couleur (si vide, tout passe)
+        const colorOk = !color || (entry.markerColor === color);
+        return textOk && colorOk;
+    });
     renderTable(filteredData);
     renderMapMarkers(filteredData);
 }
+// Gestion des boutons de filtre couleur
+const colorFilterBtns = document.querySelectorAll('.color-filter-btn');
+let activeColorFilter = '';
+colorFilterBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+        colorFilterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeColorFilter = btn.getAttribute('data-color') || '';
+        doSearchTable();
+    });
+});
+
 document.getElementById('btn-search-table').addEventListener('click', doSearchTable);
 document.getElementById('search-table').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') doSearchTable();
