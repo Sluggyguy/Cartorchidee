@@ -214,7 +214,15 @@ textarea { resize: vertical; min-height: 80px; }
 .delete-btn { background-color: #e74c3c; color: white; }
 .delete-btn:hover { background-color: #c0392b; }
 .no-entries-message td { text-align: center; padding: 20px; color: #777; font-style: italic; }
-.custom-pink-dot-icon div { background-color: deeppink; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 3px rgba(0,0,0,0.5); }
+.custom-dot-icon div { width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 3px rgba(0,0,0,0.5); }
+.custom-dot-icon-pink div { background-color: deeppink; }
+.custom-dot-icon-gray div { background-color: gray; }
+.custom-dot-icon-green div { background-color: #4caf50; }
+.custom-dot-icon-yellow div { background-color: #ffe600; }
+.custom-dot-icon-red div { background-color: #e74c3c; }
+.custom-dot-icon-blue div { background-color: #3498db; }
+.marker-color-palette span { box-shadow: 0 1px 2px #888; margin-right: 2px; }
+.marker-color-palette span:hover { border: 3px solid #222 !important; }
 .popup-image { max-width: 200px; max-height: 200px; display: block; margin-top: 8px; border-radius: 4px; border: 1px solid #ccc; }
 footer { text-align: center; padding: 15px; background-color: #333; color: #aaa; font-size: 0.9em; margin-top: auto; }
 #loading-message { display: none; color: #4A7C59; font-style: italic; margin-top: 5px; }
@@ -236,15 +244,16 @@ footer { text-align: center; padding: 15px; background-color: #333; color: #aaa;
 </head>
 <body>
 
+    <!-- Bannière principale -->
+    <header>
+        <h1>🌷 Carto Orchidée 22 🌷</h1>
+    </header>
     <!-- Onglets navigation -->
     <div class="tabs-container">
         <button class="tab-btn active" id="tab-map-btn" onclick="showTab('map')">Carte & Ajout</button>
         <button class="tab-btn" id="tab-table-btn" onclick="showTab('table')">Tableau des observations</button>
     </div>
     <div id="tab-map" class="tab-content active">
-        <header>
-            <h1> Carto Orchidée 22 🌷</h1>
-        </header>
         <div class="main-container">
             <div id="map-column">
                 <div id="map"></div>
@@ -538,17 +547,6 @@ if (genusInput && speciesInput) {
         const photoFileInput = document.getElementById('photoFile');
         const photoPreview = document.getElementById('photo-preview');
         const photoDataURLInput = document.getElementById('photoDataURL');
-        const clearPhotoButton = document.getElementById('clear-photo-btn');
-        const loadingMessage = document.getElementById('loading-message');
-        // Les variables liées à l'import JSON et au dossier de sauvegarde ont été supprimées car inutiles
-
-        // --- CUSTOM PINK MARKER ICON ---
-        const pinkDotIcon = L.divIcon({
-            className: 'custom-pink-dot-icon',
-            html: '<div></div>',
-            iconSize: [14, 14],
-            iconAnchor: [7, 7]
-        });
 
         // --- HELPER FUNCTION to convert GPS DMS to Decimal Degrees ---
         function convertDMSToDD(degrees, minutes, seconds, direction) {
@@ -624,6 +622,8 @@ if (genusInput && speciesInput) {
             photoDataURLInput.value = '';
             clearPhotoButton.style.display = 'none';
             loadingMessage.style.display = 'none';
+            window.photoDataURL = '';
+            window.photoDeleted = false;
         }
 
         // --- EVENT LISTENERS ---
@@ -1028,14 +1028,53 @@ function renderMapMarkers(data) {
 
             markersLayer.clearLayers();
             data.forEach(entry => {
-                // N'affiche la popup image que si la photo existe localement
+                // Couleur du marqueur (par défaut pink)
+                const color = entry.markerColor || 'pink';
                 let popupContent = `<b>${entry.espece || ''}</b><br><span style='color:#b03a7a;font-weight:bold;'>${entry.commune || entry.Commune || 'Commune inconnue'}</span><br>${formatDateFR(entry.date) || ''}<br>Lat: ${(typeof entry.lat === 'number' && !isNaN(entry.lat)) ? entry.lat.toFixed(5) : ''}, Lon: ${(typeof entry.lon === 'number' && !isNaN(entry.lon)) ? entry.lon.toFixed(5) : ''}<br>État de Floraison: ${entry["État de Floraison"] || 'Aucune'}<br>Pieds: ${entry["Pieds"] || 'Non renseigné'}`;
                 if (entry.photoURL) {
-                    popupContent += `<br><img src=\"${entry.photoURL}\" alt=\"Photo de ${entry.espece || ''}\" class=\"popup-image\">`;
+                    popupContent += `<br><img src="${entry.photoURL}" alt="Photo de ${entry.espece || ''}" class="popup-image">`;
                 }
+                // Ajout du carré de couleur et palette
+                popupContent += `<br><div style='margin-top:7px;'><span style='font-size:0.95em;'>Couleur du point : </span><span class="marker-color-square" data-id="${entry.id}" data-color="${color}" style="display:inline-block;width:18px;height:18px;vertical-align:middle;border-radius:4px;border:2px solid #bbb;box-shadow:0 1px 2px #888;background:${markerColors[color]};cursor:pointer;"></span></div>`;
                 if (typeof entry.lat === 'number' && typeof entry.lon === 'number' && !isNaN(entry.lat) && !isNaN(entry.lon)) {
-                    const marker = L.marker([entry.lat, entry.lon], { icon: pinkDotIcon }).addTo(markersLayer);
+                    const marker = L.marker([entry.lat, entry.lon], { icon: getDotIcon(color) }).addTo(markersLayer);
                     marker.bindPopup(popupContent);
+                    marker.on('popupopen', function(e) {
+                        // Palette dynamique
+                        const popupNode = e.popup.getElement();
+                        const colorSquare = popupNode.querySelector('.marker-color-square');
+                        if (colorSquare) {
+                            colorSquare.addEventListener('click', function(ev) {
+                                ev.stopPropagation();
+                                // Palette HTML
+                                let palette = document.createElement('div');
+                                palette.className = 'marker-color-palette';
+                                palette.style = 'margin-top:3px;display:flex;gap:7px;';
+                                Object.keys(markerColors).forEach(col => {
+                                    let swatch = document.createElement('span');
+                                    swatch.style = `display:inline-block;width:18px;height:18px;border-radius:4px;border:2px solid #bbb;background:${markerColors[col]};cursor:pointer;`;
+                                    swatch.title = col.charAt(0).toUpperCase()+col.slice(1);
+                                    if (col === color) swatch.style.border = '3px solid #222';
+                                    swatch.onclick = async function() {
+                                        // Mise à jour JS
+                                        entry.markerColor = col;
+                                        // Mise à jour visuelle
+                                        marker.setIcon(getDotIcon(col));
+                                        colorSquare.style.background = markerColors[col];
+                                        // Palette disparaît
+                                        palette.remove();
+                                        // Persistance côté serveur
+                                        await updateMarkerColorInSheetDB(entry.id, col);
+                                    };
+                                    palette.appendChild(swatch);
+                                });
+                                // Supprime palette précédente si déjà présente
+                                let oldPalette = popupNode.querySelector('.marker-color-palette');
+                                if (oldPalette) oldPalette.remove();
+                                colorSquare.parentNode.appendChild(palette);
+                            });
+                        }
+                    });
                 }
             });
         }
@@ -1097,7 +1136,8 @@ async function loadEntriesFromSheetDB() {
     Pieds: entry.Pieds || '',
     Commune: entry.Commune || '',
     "État de Floraison": entry["État de Floraison"] || entry.Etat_de_Floraison || '',
-    photoURL: entry.PhotoURL
+    photoURL: entry.PhotoURL,
+    markerColor: entry.markerColor || 'pink'
 })) : [];
 filteredData = orchidData;
         console.log("orchidData après parsing :", orchidData);
@@ -1149,7 +1189,8 @@ filteredData = orchidData;
                 Longitude: entry.lon,
                 Commune: entry.commune,
                 Note: entry.notes,
-                PhotoURL: entry.photoURL
+                PhotoURL: entry.photoURL,
+                markerColor: entry.markerColor || 'pink'
             };
             try {
                 const response = await fetch(`${SHEETDB_URL}/ID/${encodeURIComponent(entry.id)}`, {
@@ -1165,6 +1206,23 @@ filteredData = orchidData;
                 throw err;
             }
         }
+
+        // --- MISE À JOUR DE LA COULEUR DU MARQUEUR UNIQUEMENT ---
+async function updateMarkerColorInSheetDB(id, color) {
+    try {
+        const response = await fetch(`${SHEETDB_URL}/ID/${encodeURIComponent(id)}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ data: { markerColor: color } })
+        });
+        if (!response.ok) throw new Error('Erreur lors de la mise à jour de la couleur dans SheetDB');
+    } catch (err) {
+        alert("Erreur lors de la mise à jour de la couleur du marqueur : " + err.message);
+        throw err;
+    }
+}
 
         // --- SUPPRESSION D'UNE ENTRÉE DANS SHEETDB ---
         async function deleteEntryFromSheetDB(id) {
