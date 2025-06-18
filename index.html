@@ -411,6 +411,15 @@ footer { text-align: center; padding: 15px; background-color: #333; color: #aaa;
         tileLayer.addTo(map);
 
         // --- GLOBAL VARIABLES ---
+        // Mapping des couleurs utilisées pour les marqueurs
+        const markerColors = {
+            pink: 'deeppink',
+            gray: 'gray',
+            green: '#4caf50',
+            yellow: '#ffe600',
+            red: '#e74c3c',
+            blue: '#3498db'
+        };
         let orchidData = [];
         let editingEntryId = null;
         let currentEditId = null;
@@ -1242,15 +1251,4 @@ async function updateMarkerColorInSheetDB(id, color) {
             await loadEntriesFromSheetDB();
             renderTable(filteredData);
             renderMapMarkers(filteredData);
-            resetPhotoFields(); // Ensure photo fields are clear on initial load
-        }
-
-        document.addEventListener('DOMContentLoaded', initializeApp);
-    // Affichage initial : tout afficher
-    renderTable(filteredData);
-    renderMapMarkers(filteredData);
-
-
-    </script>
-</body>
-</html>
+            resetPhotoFie
