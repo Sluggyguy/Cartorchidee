@@ -389,7 +389,6 @@ footer { text-align: center; padding: 15px; background-color: #333; color: #aaa;
         if(tab === 'map') {
             document.getElementById('tab-map').classList.add('active');
             document.getElementById('tab-map-btn').classList.add('active');
-            // Force map resize when tab is shown
             setTimeout(function() {
                 if (typeof map !== 'undefined') {
                     map.invalidateSize();
@@ -398,7 +397,6 @@ footer { text-align: center; padding: 15px; background-color: #333; color: #aaa;
         } else {
             document.getElementById('tab-table').classList.add('active');
             document.getElementById('tab-table-btn').classList.add('active');
-            // Optionally re-render table for freshness
             if (typeof renderTable === 'function') {
                 renderTable();
             }
@@ -1248,4 +1246,11 @@ async function updateMarkerColorInSheetDB(id, color) {
         }
 
         document.addEventListener('DOMContentLoaded', initializeApp);
-   
+    // Affichage initial : tout afficher
+    renderTable(filteredData);
+    renderMapMarkers(filteredData);
+
+
+    </script>
+</body>
+</html>
