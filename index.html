@@ -547,6 +547,8 @@ if (genusInput && speciesInput) {
         const photoFileInput = document.getElementById('photoFile');
         const photoPreview = document.getElementById('photo-preview');
         const photoDataURLInput = document.getElementById('photoDataURL');
+const clearPhotoButton = document.getElementById('clear-photo-btn');
+const loadingMessage = document.getElementById('loading-message');
 
         // --- HELPER FUNCTION to convert GPS DMS to Decimal Degrees ---
         function convertDMSToDD(degrees, minutes, seconds, direction) {
@@ -1246,11 +1248,4 @@ async function updateMarkerColorInSheetDB(id, color) {
         }
 
         document.addEventListener('DOMContentLoaded', initializeApp);
-    // Affichage initial : tout afficher
-    renderTable(filteredData);
-    renderMapMarkers(filteredData);
-
-
-    </script>
-</body>
-</html>
+   
