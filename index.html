@@ -428,6 +428,19 @@ footer { text-align: center; padding: 15px; background-color: #333; color: #aaa;
         const speciesInput = document.getElementById('species');
         const communeInput = document.getElementById('commune');
 
+// Fonction utilitaire pour créer une icône colorée (point)
+function getDotIcon(color) {
+    // Utilise la couleur CSS du markerColors, ou 'deeppink' par défaut
+    const colorHex = markerColors[color] || 'deeppink';
+    return L.divIcon({
+        className: `custom-dot-icon custom-dot-icon-${color}`,
+        iconSize: [22, 22],
+        iconAnchor: [11, 11],
+        popupAnchor: [0, -10],
+        html: `<div style="width:18px;height:18px;border-radius:50%;background:${colorHex};border:2.5px solid #fff;box-shadow:0 2px 7px #888;"></div>`
+    });
+}
+
 // Dictionnaire genre -> espèces
 const genusSpeciesMap = {
     "Anacamptis": [
