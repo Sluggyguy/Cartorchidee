@@ -1251,4 +1251,11 @@ async function updateMarkerColorInSheetDB(id, color) {
             await loadEntriesFromSheetDB();
             renderTable(filteredData);
             renderMapMarkers(filteredData);
-            resetPhotoFie
+            resetPhotoFields(); // Ensure photo fields are clear on initial load
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
